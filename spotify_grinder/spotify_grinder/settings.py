@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'grinder.apps.GrinderConfig',
+    'apps.grinder.apps.GrinderConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
