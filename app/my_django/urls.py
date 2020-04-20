@@ -14,10 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include,re_path
 from grinder import views
+from grinder_api import views
+
 urlpatterns = [
     path('', include('grinder.urls')),
     path('grinder/', include('grinder.urls')),
     path('admin/', admin.site.urls),
+    path('grinder_api', views.index_api.as_view()),
+    # Paths for login
+    re_path(r'^login(?:\/)?$', views.Login.as_view()),
+    re_path(r'^login/refresh(?:\/)?$', views.LoginRefresh.as_view()),
+    path('login/register', views.Register.as_view())
 ]
