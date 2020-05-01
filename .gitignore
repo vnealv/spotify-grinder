@@ -1,0 +1,4 @@
+.env.dev.db
+config.cfg
+.swp
+api_wrapper.py
