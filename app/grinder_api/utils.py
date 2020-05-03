@@ -14,7 +14,7 @@ def generate_tokens(user):
         'iat': utc_now,
         'exp': utc_now + timedelta(minutes=60),
         'nbf': utc_now,
-        'iss': "http://localhost:8000/login",  # this has to be replaced with application domain after deploying
+        'iss': "http://localhost:8000/grinder_api/login",  #replace with domain name after production
         'username': user.username,
         'email': user.email,
         'type': 'access'
@@ -26,7 +26,7 @@ def generate_tokens(user):
         'iat': utc_now,
         'exp': utc_now + timedelta(days=2),
         'nbf': utc_now,
-        'iss': "http://localhost:8000/login",  # this has to be replaced with application domain after deploying
+        'iss': "http://localhost:8000/grinder_api/login",  #replace with domain name after production
         'username': user.username,
         'type': 'refresh',
     }
