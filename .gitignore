@@ -1,4 +1,5 @@
 .env.dev.db
 config.cfg
 .swp
-api_wrapper.py
+spotify_grinder.py
+spotify-grinder.7z
