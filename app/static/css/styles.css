@@ -2,8 +2,24 @@
 body, html {
  height: 100%
 }
-
+/*Logo1.png(151px;,91px;)*//*Logo2.png(100px;,91px;)*/
+.logo{
+  text-indent: -999999px;
+  background: url('../images/resizedImage.png');
+  width: 100px;
+  height: 90px;
+  top: -30px;
+  left: -20px;
+  position: absolute;
+}
+p {
+ margin-top: 45px;
+ margin-bottom:20px;
+ margin-right:40px;
+ margin-left: 70px;
+}
 .bgimg {
+ background-color: #8B008B;
  /* Background image */
  background-image: url("https://pngimage.net/wp-content/uploads/2018/06/weed-plant-png-4.png");
  /* Full-screen */
