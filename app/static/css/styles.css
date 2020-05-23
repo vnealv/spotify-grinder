@@ -5,7 +5,7 @@ body, html {
 /*Logo1.png(151px;,91px;)*//*Logo2.png(100px;,91px;)*/
 .logo{
   text-indent: -999999px;
-  background: url('../images/resizedImage.png');
+  background: url('../images/resizedImage.png') no-repeat;
   width: 100px;
   height: 90px;
   top: -30px;
