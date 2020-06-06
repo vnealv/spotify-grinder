@@ -1,7 +1,10 @@
-.env.dev.db
 config.cfg
 .swp
 api_wrapper.py
-spotify_grinder.py
-spotify-grinder.7z
-.env.prod*
+*.pyc
+*/*.pyc
+*/*/*.pyc
+*/migrations/*
+/__pycache__
+src/my_django/__pycache__/*
+.envs
