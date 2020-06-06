@@ -1,31 +1,39 @@
-version: '3.7'
-
+version: "2"
 services:
-  web:
-    build: ./app
-    command: gunicorn my_django.wsgi:application --bind 0.0.0.0:8000
+  nginx:
+    image: nginx:latest
+    container_name: ng01
     ports:
-      - 8000:8000
-    env_file:
-      - ./.env.prod
+      - "8000:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+      - /static:/static  <--- HERE
+    depends_on:
+      - web
+    networks:
+      - djangonetwork
+  web:
+    build: .
+    container_name: dg01
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn my_django.wsgi -b 0.0.0.0:8000"
     depends_on:
       - db
-    networks:
-      - app-network
-
-  db:
-    image: postgres:12.0-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./src:/src
+    expose:
+      - "8000"
     env_file:
-      - ./.env.prod.db
+      - ./.envs/.django
     networks:
-      - app-network
-
-volumes:
-  postgres_data:
-
-#Docker Networks
+      - djangonetwork
+  db:
+    image: postgres:latest
+    container_name: ps01
+    env_file:
+      - ./.envs/.postgres
+    networks:
+      - djangonetwork
 networks:
-  app-network:
+  djangonetwork:
     driver: bridge
