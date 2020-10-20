@@ -19,14 +19,17 @@ stop:
 restart:
 	docker-compose stop && docker-compose start
 
+reup:
+	docker-compose down  && docker-compose up -d
+
 shell-nginx:
-	docker exec -ti nz01 /bin/sh
+	docker exec -ti ng01 /bin/sh
 
 shell-web:
-	docker exec -ti dz01 /bin/sh
+	docker exec -ti dg01 /bin/sh
 
 shell-db:
-	docker exec -ti pz01 /bin/sh
+	docker exec -ti ps01 /bin/sh
 
 log-nginx:
 	docker-compose logs nginx
@@ -48,3 +51,9 @@ ps:
 
 deploy:
 	docker-compose -f docker-compose.yml exec web python manage.py check --deploy
+
+makemigrations:
+	docker-compose -f docker-compose.yml exec web python manage.py makemigrations
+
+migrate:
+	docker-compose -f docker-compose.yml exec web python manage.py migrate

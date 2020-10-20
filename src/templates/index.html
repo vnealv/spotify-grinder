@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>spotify-gringer</title>
-  </head>
-  <body>
-  
-  </body>
+{% extends 'base.html' %}
+{% block content %}
+<html>
+	<div class"col"  style="margin:20px">
+		<a class="text-monospace font-weight-bold" href=" {{spuser_url}} "> {{spuser}}</a>
+		<div class="text-monospace text-*-right">
+			{{ out|safe  }}
+		</div>
+	</div>
 </html>
+{% endblock %}

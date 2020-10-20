@@ -13,6 +13,8 @@ Checkout the [commands](#commands) section for more usage.
               DB_PASSWORD=password
               DB_USER=user
               DB_NAME=django_db
+              CLIENT_ID
+              CLIENT_SECRET
 
 `.postgres`   POSTGRES_HOST=db
               POSTGRES_PORT=5432
