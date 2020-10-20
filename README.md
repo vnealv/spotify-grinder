@@ -8,20 +8,27 @@
 Checkout the [commands](#commands) section for more usage.
 
 ## Envs
-`.django`     DB_HOST=db
-              DB_PORT=5432
-              DB_PASSWORD=password
-              DB_USER=user
-              DB_NAME=django_db
-              CLIENT_ID
-              CLIENT_SECRET
+`.django`    
 
-`.postgres`   POSTGRES_HOST=db
-              POSTGRES_PORT=5432
-              POSTGRES_USER=user
-              POSTGRES_PASSWORD=password
-              POSTGRES_DB=django_db
+```
+DB_HOST=db
+DB_PORT=5432
+DB_PASSWORD=password
+DB_USER=user
+DB_NAME=django_db
+CLIENT_ID=sp_ID
+CLIENT_SECRET=sp_secret
+```
 
+`.postgres`   
+
+```
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=django_db
+```
 
 ## Commands
 To use this project, run this commands:
