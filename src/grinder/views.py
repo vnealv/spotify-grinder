@@ -27,8 +27,8 @@ API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 
 # Server-side Parameters
-CLIENT_SIDE_URL = "http://localhost"
-PORT = 8000
+CLIENT_SIDE_URL =  os.environ.get("client_side_url") 
+PORT = os.environ.get("port")
 REDIRECT_URI = "{}:{}/callback/q".format(CLIENT_SIDE_URL, PORT)
 SCOPE = "playlist-modify-public playlist-modify-private user-top-read playlist-read-collaborative playlist-read-private"
 STATE = ""
@@ -98,6 +98,7 @@ def GetUser(request):
 def auth(request):
     # Auth Step 4: Requests refresh and access tokens
     auth_token = request.GET.get('code')
+    user.spRefresh()
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
@@ -116,6 +117,12 @@ def auth(request):
 
     # Updating the user.access_token
     user = User.objects.get(username=request.user.username)
+    
+    # Update User tokens and expire date 
+    user.access_token = access_token 
+    user.refresh_token = refresh_token
+    user.expires_in = expires_in
+
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
