@@ -21,7 +21,6 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-#SECRET_KEY = '+j%rz$tja0ucyf7#gp%%c-k#6)(nh$u0ycux-^(qk29k@ju*4d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
 #DEBUG = True
@@ -85,6 +84,17 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST"),
         "PORT": os.environ.get("SQL_PORT"),
     }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
+    }
 }
 """
 DATABASES = {
@@ -136,7 +146,7 @@ AUTH_USER_MODEL = 'grinder.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-# run collectstatic command(python3 manage.py collectstatic)
-#           ^ will store the static files in your /static directory of OS
+#run collectstatic command(python3 manage.py collectstatic)
+#it will store the static files in your /static directory of OS
 STATIC_URL = '/static/'
 STATIC_ROOT='./static/'
