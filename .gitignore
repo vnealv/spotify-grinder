@@ -1,10 +1,10 @@
-config.cfg
-.swp
-api_wrapper.py
+*.swp
 *.pyc
 */*.pyc
 */*/*.pyc
 */migrations/*
 /__pycache__
 src/my_django/__pycache__/*
+src/grinder/__pycache__/*
+src/grinder/migrations/*
 .envs
