@@ -19,9 +19,6 @@ stop:
 restart:
 	docker-compose stop && docker-compose start
 
-reup:
-	docker-compose down  && docker-compose up -d
-
 shell-nginx:
 	docker exec -ti ng01 /bin/sh
 
@@ -41,13 +38,10 @@ log-db:
 	docker-compose logs db
 
 collectstatic:
-	docker exec dg01 /bin/sh -c "python manage.py collectstatic --noinput"
+	docker-compose -f docker-compose.yml exec web python manage.py collectstatic --noinput
 
 prune:
 	docker system prune
-
-ps:
-	docker-compose ps
 
 deploy:
 	docker-compose -f docker-compose.yml exec web python manage.py check --deploy

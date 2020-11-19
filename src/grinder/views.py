@@ -11,38 +11,18 @@ from urllib.parse import quote
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
+import datetime
+from django.utils import timezone
+from .SpotifyWrapper import Spotify
+
 User = get_user_model()
+sp = Spotify()
 
-print('''"Real knowledge is to know the extent of one's ignorance."'''+'\n                       '+"~Confucius~")
-
-#  Client Keys
-CLIENT_ID= os.environ.get("CLIENT_ID")
-CLIENT_SECRET= os.environ.get("CLIENT_SECRET")
-
-# Spotify URLS
-SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
-SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
-SPOTIFY_API_BASE_URL = "https://api.spotify.com"
-API_VERSION = "v1"
-SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
-
-# Server-side Parameters
-CLIENT_SIDE_URL =  os.environ.get("client_side_url")
-PORT = os.environ.get("port")
-REDIRECT_URI = "{}:{}/callback/q".format(CLIENT_SIDE_URL, PORT)
-SCOPE = "playlist-modify-public playlist-modify-private user-top-read playlist-read-collaborative playlist-read-private"
-STATE = ""
-SHOW_DIALOG_bool = True
-SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
-
-auth_query_parameters = {
-    "response_type": "code",
-    "redirect_uri": REDIRECT_URI,
-    "scope": SCOPE,
-    # "state": STATE,
-    "show_dialog": SHOW_DIALOG_str,
-    "client_id": CLIENT_ID
-}
+def Refresh(User):
+    user.access_token , user.refresh_token, user.expires_in = sp.RefreshTokens(User.refresh_token)
+    user.last_login = timezone.now()
+    user.save(update_fields=['access_token', 'refresh_token', 'expires_in', 'last_login'])
+    return User.access_token
 
 def CreateUser(request):
     # creates new user in db
@@ -50,11 +30,9 @@ def CreateUser(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            print("user = form.save()", user)
             user_name = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(request, username=user_name, password=raw_password)
-            print("user = form.authenticate()", user)
             login(request, user)
             return redirect ('GetUser')
     else:
@@ -77,10 +55,12 @@ def GetUser(request):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 login(request, user)
-                # Auth Step 1: Authorization
-                url_args = "&".join(["{}={}".format(key, quote(val)) for key, val in auth_query_parameters.items()])
-                auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
-                return redirect(auth_url)
+                user.last_login = timezone.now()
+                user.save(update_fields=['last_login'])
+                if user.refresh_token:
+                    return redirect ( 'auth' )
+                else:
+                    return redirect(sp.getRedirectURL())
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your spotify-grinder account is disabled.")
@@ -90,47 +70,20 @@ def GetUser(request):
     else:
         return render(request, 'sign_in.html', context={})
 
-# Auth step 2: User login
-
-# Auth step 3: Spotify redirects the User to auth
-
 @login_required(login_url='sign_in/')
 def auth(request):
+    user = User.objects.get(username=request.user.username)
     # Auth Step 4: Requests refresh and access tokens
     auth_token = request.GET.get('code')
-    #user.spRefresh()
-    code_payload = {
-        "grant_type": "authorization_code",
-        "code": str(auth_token),
-        "redirect_uri": REDIRECT_URI,
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-    }
-    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload)
+    if auth_token:
+        user.access_token , user.refresh_token, user.expires_in = sp.getTokens(auth_token)
+        user.last_login = timezone.now()
+        user.save(update_fields=['access_token', 'refresh_token', 'expires_in', 'last_login'])
+        access_token = user.access_token
+    else:
+        access_token = Refresh(user)
 
-    # Auth Step 5: Tokens are Returned to Application
-    response_data = json.loads(post_request.text)
-    access_token = response_data["access_token"]
-    refresh_token = response_data["refresh_token"]
-    token_type = response_data["token_type"]
-    expires_in = response_data["expires_in"]
-
-    # Updating the user.access_token
-    user = User.objects.get(username=request.user.username)
-
-    # Update User tokens and expire date
-    user.access_token = access_token
-    user.refresh_token = refresh_token
-    user.expires_in = expires_in
-
-    # Auth Step 6: Use the access token to access Spotify API
-    authorization_header = {"Authorization": "Bearer {}".format(access_token)}
-
-    # Get profile data
-    Current_users_profile_APIendpoint = "{}/me".format(SPOTIFY_API_URL)
-    User_profile_APIendpoint = "{}/users/{}".format(SPOTIFY_API_URL, user.username)
-    profile_response = requests.get(User_profile_APIendpoint, headers=authorization_header)
-    profile_data = json.loads(profile_response.text)
+    profile_data = sp.getProfile(user.access_token, user.username)
 
     # top 100 tracks
     top50_Apiendpoint ="{}/top/tracks".format(Current_users_profile_APIendpoint)
@@ -143,6 +96,7 @@ def auth(request):
     top50_audiofeatures_APIendpoint = "{}/audio-features/?ids={}".format(SPOTIFY_API_URL, ids)
     top50_audiofeatures_response = requests.get(top50_audiofeatures_APIendpoint, headers=authorization_header)
     top50_audiofeatures = json.loads(top50_audiofeatures_response.text)
+
     # for item in top50["audio_features"]:
     #     x = item["id"]
     #     valence
@@ -161,8 +115,8 @@ def auth(request):
     # recommendations = requests.get(recommendations_APIendpoint , headers=authorization_header)
 
 
-    user_urls = profile_data["external_urls"]
     user_sp_url = user_urls["spotify"]
+    user_urls = profile_data["external_urls"]
     name = profile_data["display_name"]
     print(name, user_sp_url)
 
