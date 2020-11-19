@@ -16,6 +16,8 @@ DB_PORT=5432
 DB_PASSWORD=password
 DB_USER=user
 DB_NAME=django_db
+CLIENT_ID=sp_ID
+CLIENT_SECRET=sp_secret
 ```
 
 `.postgres`   
@@ -27,7 +29,6 @@ POSTGRES_USER=user
 POSTGRES_PASSWORD=password
 POSTGRES_DB=django_db
 ```
-
 
 ## Commands
 To use this project, run this commands:

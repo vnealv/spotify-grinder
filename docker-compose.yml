@@ -1,15 +1,28 @@
-version: "2"
+version: "3.7"
 services:
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+      -  /static:/static
+    depends_on:
+      - web
+    networks:
+      - djangonetwork
   web:
     build: .
     container_name: dg01
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn my_django.wsgi -b 0.0.0.0:8000"
+    command: bash -c "sleep 7; python manage.py makemigrations && python manage.py migrate && gunicorn my_django.wsgi -b 0.0.0.0:8000"
     depends_on:
       - db
     volumes:
       - ./src:/src
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     env_file:
       - ./.envs/.django
     networks:
