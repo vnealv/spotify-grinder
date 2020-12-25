@@ -37,6 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party
+    'rest_framework',
+    'django_extensions',
+
+    # first party
+    'spotifier.apps.SpotifierConfig',
+    'playlist.apps.PlaylistConfig',
+    'track.apps.TrackConfig',
+    'grinder.apps.GrinderConfig',
 ]
 
 MIDDLEWARE = [
