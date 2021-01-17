@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'django_extensions',
+    "url_checks.apps.UrlChecksConfig",
 
     # first party
     'spotifier.apps.SpotifierConfig',
